@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>Menú</title>
+  <meta name="description" content="Menú semanal: qué toca cocinar cada día. Sin cuentas, sin cuotas.">
+  <meta name="theme-color" content="#f97316" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#15100c" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Menú">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <main id="app">
+
+    <!-- ===== Vista: Hoy ===== -->
+    <section id="view-hoy" class="view active">
+      <header class="date-nav">
+        <button class="icon-btn" id="btn-prev-day" aria-label="Día anterior">‹</button>
+        <button class="date-label" id="btn-today"><span id="date-text">Hoy</span></button>
+        <button class="icon-btn" id="btn-next-day" aria-label="Día siguiente">›</button>
+      </header>
+      <div id="hoy-meals"></div>
+    </section>
+
+    <!-- ===== Vista: Semana ===== -->
+    <section id="view-semana" class="view">
+      <header class="date-nav">
+        <button class="icon-btn" id="btn-prev-week" aria-label="Semana anterior">‹</button>
+        <button class="date-label" id="btn-this-week"><span id="week-text"></span></button>
+        <button class="icon-btn" id="btn-next-week" aria-label="Semana siguiente">›</button>
+      </header>
+      <div id="semana-days"></div>
+      <div class="btn-row week-actions">
+        <button class="btn secondary small" id="btn-copy-week">Copiar anterior</button>
+        <button class="btn secondary small" id="btn-fill-week">Rellenar huecos</button>
+        <button class="btn secondary small" id="btn-clear-week">Vaciar</button>
+      </div>
+    </section>
+
+    <!-- ===== Vista: Compra ===== -->
+    <section id="view-compra" class="view">
+      <header class="date-nav">
+        <button class="icon-btn" id="btn-prev-week-c" aria-label="Semana anterior">‹</button>
+        <button class="date-label" id="btn-this-week-c"><span id="compra-week-text"></span></button>
+        <button class="icon-btn" id="btn-next-week-c" aria-label="Semana siguiente">›</button>
+      </header>
+      <div class="card">
+        <div class="compra-head">
+          <span class="card-title">Lista de la compra</span>
+          <span class="compra-count" id="compra-count"></span>
+        </div>
+        <p class="hint pasillos-hint" id="pasillos-hint" hidden>Toca un producto para cambiarlo de pasillo.</p>
+        <div id="shop-pending"></div>
+        <div class="shop-done-head" id="shop-done-head" hidden>En el carro</div>
+        <ul class="shop-list" id="shop-done"></ul>
+        <div class="add-row">
+          <input type="text" id="extra-input" placeholder="Añadir a la lista (leche, papel…)">
+          <button class="btn small" id="btn-add-extra" aria-label="Añadir">+</button>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn secondary small" id="btn-uncheck-all">Desmarcar todo</button>
+        <button class="btn secondary small" id="btn-copy-list">Copiar lista</button>
+        <button class="btn secondary small" id="btn-edit-pasillos">Editar pasillos</button>
+      </div>
+    </section>
+
+    <!-- ===== Vista: Platos ===== -->
+    <section id="view-platos" class="view">
+      <header class="view-header"><h1>Platos</h1></header>
+      <input type="search" class="sheet-search" id="platos-search" placeholder="Buscar plato o ingrediente…">
+      <div class="chips" id="platos-filter">
+        <button class="chip active" data-tipo="">Todos</button>
+        <button class="chip" data-tipo="desayuno">Desayuno</button>
+        <button class="chip" data-tipo="comida">Comida</button>
+        <button class="chip" data-tipo="cena">Cena</button>
+      </div>
+      <ul class="plato-list" id="platos-list"></ul>
+      <button class="btn full" id="btn-new-plato">+ Nuevo plato</button>
+    </section>
+
+    <!-- ===== Vista: Ajustes ===== -->
+    <section id="view-ajustes" class="view">
+      <header class="view-header"><h1>Ajustes</h1></header>
+      <div class="card">
+        <h2 class="card-title">Copia de seguridad</h2>
+        <p class="hint">Tus datos viven solo en este dispositivo. Exporta una copia de vez en cuando por si borras los datos del navegador.</p>
+        <div class="btn-row">
+          <button class="btn" id="btn-export">Exportar datos</button>
+          <button class="btn secondary" id="btn-import">Importar</button>
+          <input type="file" id="import-file" accept=".json,application/json" hidden>
+        </div>
+      </div>
+      <div class="card danger-card">
+        <h2 class="card-title">Zona peligrosa</h2>
+        <p class="hint">Borra platos y menús de todas las semanas.</p>
+        <button class="btn danger" id="btn-wipe">Borrar todos los datos</button>
+      </div>
+      <p class="about">Menú v0 · app personal, sin cuentas ni servidores. Los datos no salen de tu dispositivo.</p>
+    </section>
+
+  </main>
+
+  <!-- ===== Navegación inferior ===== -->
+  <nav class="tabbar">
+    <button class="tab active" data-view="hoy"><span class="tab-icon">🍽️</span>Hoy</button>
+    <button class="tab" data-view="semana"><span class="tab-icon">🗓️</span>Semana</button>
+    <button class="tab" data-view="compra"><span class="tab-icon">🛒</span>Compra</button>
+    <button class="tab" data-view="platos"><span class="tab-icon">📒</span>Platos</button>
+    <button class="tab" data-view="ajustes"><span class="tab-icon">⚙️</span>Ajustes</button>
+  </nav>
+
+  <!-- ===== Hoja modal (sheet) ===== -->
+  <div class="sheet-overlay" id="sheet-overlay" hidden>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true">
+      <div class="sheet-handle"></div>
+      <div class="sheet-content" id="sheet-content"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
